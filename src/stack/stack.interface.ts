@@ -1,8 +1,8 @@
-export interface Stack{
+export interface Stack <T> {
     // agrega un elemento nuevo a la pila.
-    push(value:number): void;
-    top():number;
-    pop():number;
+    push(value:T): void;
+    top():T;
+    pop():T;
     size():number;
     isEmpty():boolean;
 }

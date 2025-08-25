@@ -1,15 +1,15 @@
 import { Stack } from './stack.interface';
 import { Node } from './node';
 
-export class LinkedStack implements Stack {
-    public head: Node | null; // La cabeza de la pila, puede ser nula si la pila está vacía
+export class LinkedStack <T>  implements Stack <T>{
+    public head: Node <T> | null; // La cabeza de la pila, puede ser nula si la pila está vacía
     public tam:number;
     constructor() {
         this.tam = 0; // Inicializa el tamaño de la pila a 0
         this.head = null; // Inicializa la cabeza de la pila como nula
     }
     //implementar el stack
-    public push(value: number): void {
+    public push(value: T): void {
         if (this.tam ===0){
             const nuevoNodo = new Node(null, value);
             this.head = nuevoNodo; // Si la pila está vacía, el nuevo nodo es la cabeza
@@ -22,13 +22,13 @@ export class LinkedStack implements Stack {
         this.tam++;
         
     }
-    public top(): number {
+    public top(): T {
         if (this.tam===0){
             throw new Error("La pila está vacía");
         }
         return this.head!.elemento;
     }
-    public pop(): number {
+    public pop(): T {
         if (this.tam === null) {
             throw new Error("La pila está vacía");
         }
