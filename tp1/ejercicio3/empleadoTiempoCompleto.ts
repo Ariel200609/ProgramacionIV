@@ -1,9 +1,9 @@
-import {Empleado} from "./empleado.abstract"
+import { Empleado } from "./empleado.abstract";
 
-export class EmpleadoTiempocompleto extends Empleado{
+export class EmpleadoTiempoCompleto extends Empleado {
     private bonoFijo: number = 20000;
 
     calcularSalario(): number {
-        return this.salarioBase + this.bonoFijo;
+        return this.getSalarioBase() + this.bonoFijo;
     }
 }

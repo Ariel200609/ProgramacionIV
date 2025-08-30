@@ -11,5 +11,5 @@ const empleados: Empleado[] = [
 ];
 
 for (const empleado of empleados) {
-    console.log(`${empleado.nombre} cobra $${empleado.calcularSalario()}`);
+    console.log(`${empleado.getNombre} cobra $${empleado.calcularSalario()}`);
 }

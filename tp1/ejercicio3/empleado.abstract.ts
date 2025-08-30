@@ -1,7 +1,13 @@
 export abstract class Empleado {
-    constructor (public nombre: string,public salarioBase:number){
+    constructor(private nombre: string, private salarioBase: number) {}
 
+    abstract calcularSalario(): number;
+
+    getNombre(): string {
+        return this.nombre;
     }
 
-    abstract calcularSalario() : number;
-} 
+    getSalarioBase(): number {
+        return this.salarioBase;
+    }
+}

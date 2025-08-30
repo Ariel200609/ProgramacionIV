@@ -1,8 +1,8 @@
-import {Empleado} from "./empleado.abstract"
+import { Empleado } from "./empleado.abstract";
 
-class EmpleadoMedioTiempo extends Empleado{
+export class EmpleadoMedioTiempo extends Empleado {
     calcularSalario(): number {
-        return this.salarioBase * 0.5;
+        return this.getSalarioBase() * 0.5;
     }
 }
 
