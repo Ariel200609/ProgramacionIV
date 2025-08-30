@@ -4,10 +4,10 @@ import { EmpleadoMedioTiempo } from "./empleadoTiempoCompleto";
 
 
 const empleados: Empleado[] = [
-    new EmpleadoTiempoCompleto("Lucía", 50000),
-    new EmpleadoMedioTiempo("Tomás", 40000),
-    new EmpleadoTiempoCompleto("Valeria", 60000),
-    new EmpleadoMedioTiempo("Mateo", 30000),
+    new EmpleadoTiempoCompleto("sergio", 50000),
+    new EmpleadoMedioTiempo("ramos", 40000),
+    new EmpleadoTiempoCompleto("damian", 60000),
+    new EmpleadoMedioTiempo("ricardo", 30000),
 ];
 
 for (const empleado of empleados) {
