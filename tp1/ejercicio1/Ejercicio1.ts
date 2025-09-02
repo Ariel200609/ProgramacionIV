@@ -11,7 +11,7 @@ class Perro implements Animal {
     hacerSonido(): void {
         if (this.Nombre){
             console.log(`${this.Nombre} Ladraa!! : `);
-            console.log(`Guau!`);
+            console.log("Guau!");
         } else {
             console.log("Guau!");
         }
