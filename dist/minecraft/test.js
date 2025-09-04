@@ -1,0 +1,24 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const cuboDeMadera_1 = require("./cubo/cuboDeMadera");
+const cuboDePiedra_1 = require("./cubo/cuboDePiedra");
+const picoDeMadera_1 = require("./pico/picoDeMadera");
+const picoDePiedra_1 = require("./pico/picoDePiedra");
+const cuboDeMadera = new cuboDeMadera_1.CuboDeMadera();
+const cuboDePiedra = new cuboDePiedra_1.CuboDePiedra();
+const picoDeMadera = new picoDeMadera_1.PicoDeMadera();
+const picoDePiedra = new picoDePiedra_1.PicoDePiedra();
+const picoDePiedra2 = new picoDePiedra_1.PicoDePiedra();
+console.log(picoDeMadera.toString());
+console.log(cuboDeMadera.toString());
+console.log('--- Accion: Picar cubo de madera con pico de madera ---');
+picoDeMadera.picar(cuboDeMadera);
+console.log(picoDeMadera.toString());
+console.log(cuboDeMadera.toString());
+picoDeMadera.picar(cuboDePiedra);
+picoDeMadera.picar(cuboDePiedra);
+picoDeMadera.picar(cuboDePiedra);
+picoDeMadera.picar(cuboDePiedra);
+console.log(picoDeMadera_1.PicoDeMadera.toString());
+console.log(cuboDePiedra.toString());
+//# sourceMappingURL=test.js.map

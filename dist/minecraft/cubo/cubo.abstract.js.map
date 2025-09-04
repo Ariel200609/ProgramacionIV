@@ -1,0 +1,1 @@
+{"version":3,"file":"cubo.abstract.js","sourceRoot":"","sources":["../../../src/minecraft/cubo/cubo.abstract.ts"],"names":[],"mappings":";;;AAAA,MAAsB,IAAI;IAMf,SAAS;QACZ,OAAO,IAAI,CAAC,MAAM,CAAC;IACvB,CAAC;IAEM,QAAQ;QACX,OAAO,YAAY,IAAI,CAAC,MAAM,mBAAmB,IAAI,CAAC,QAAQ,aAAa,IAAI,CAAC,MAAM,EAAE,CAAC;IAC7F,CAAC;CACJ;AAbD,oBAaC"}
