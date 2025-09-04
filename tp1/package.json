@@ -1,0 +1,22 @@
+{
+  "name": "programacioniv",
+  "version": "1.0.0",
+  "description": "Trabajos prácticos Programación IV",
+  "scripts": {
+    "build": "tsc",
+    "ejercicio1": "ts-node tp1/ejercicio1/Ejercicio1.ts",
+    "ejercicio2": "ts-node tp1/ejercicio2/index.ts",
+    "ejercicio3": "ts-node tp1/ejercicio3/index.ts",
+    "ejercicio4": "ts-node tp1/ejercicio4/index.ts",
+    "ejercicio5": "ts-node tp1/ejercicio5/index.ts",
+    "all": "ts-node index.ts"
+  },
+  "devDependencies": {
+    "@types/readline-sync": "^1.4.8",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  }
+}
