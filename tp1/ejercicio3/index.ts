@@ -1,6 +1,6 @@
 import { Empleado } from "./empleado.abstract";
-import { EmpleadoTiempoCompleto } from "./empleadoMedioTiempo";
-import { EmpleadoMedioTiempo } from "./empleadoTiempoCompleto";
+import { EmpleadoMedioTiempo } from "./empleadoMedioTiempo";
+import { EmpleadoTiempoCompleto } from "./empleadoTiempoCompleto";
 
 
 const empleados: Empleado[] = [
