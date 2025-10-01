@@ -1,33 +1,22 @@
-import express from 'express';
-import cors from 'cors';
+import express, { Application } from 'express';
+import ordersRouter from './routes/order.routes';
 
-
-class Server {
-    public app: express.Application;
-    public port: number;
-
-    constructor(port: number) {
-        this.port = port;
-        this.app = express();
-        this.middlewares();
-        this.routes();
-        
-    }
-    middlewares(){
-        this.app.use(express.json({limit: '150mb'}));
-
-        //cors
-        this.app.use( cors());
-    }
-    routes(){
-        // this.app.use("/users",userRoute);
-        // this.app.use( "/categories",categoryRoute);
-        // this.app.use("/products",productRouote)
-        // this.app.use("/restart",restartRoute);
-
-    }
-    start(callback: () => void) {
-        this.app.listen(this.port, callback);
-    }
+export function makeApp(): Application {
+  const app = express();
+  
+  app.use(express.json());
+  
+  // Health check
+  app.get('/health', (req, res) => {
+    res.json({ status: 'ok' });
+  });
+  
+  // Routes
+  app.use('/orders', ordersRouter);
+  
+  app.use((req, res) => {
+    res.status(404).json({ error: 'Route not found' });
+  });
+  
+  return app;
 }
-export default Server;

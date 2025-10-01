@@ -4,24 +4,37 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "vitest --ui",
-    "build": "npx tsc --watch",
-    "dev": "node --watch ./dist/index.js"
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.5.1",
-    "typescript": "^5.9.2",
-    "vitest": "^3.2.4",
-    "@types/cors": "^2.8.19"
+    "@types/supertest": "^6.0.3",
+    "@vitest/coverage-v8": "^3.2.4",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "morgan": "^1.10.1"
+    "morgan": "^1.10.1",
+    "supertest": "^7.1.4",
+    "vitest": "^3.2.4",
+    "zod": "^4.1.11"
+  },
+  "compilerOptions": {
+    "types": [
+      "vitest/globals",
+      "node"
+    ]
   }
 }

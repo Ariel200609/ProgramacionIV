@@ -3,31 +3,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.makeApp = makeApp;
 const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
-class Server {
-    app;
-    port;
-    constructor(port) {
-        this.port = port;
-        this.app = (0, express_1.default)();
-        this.middlewares();
-        this.routes();
-    }
-    middlewares() {
-        this.app.use(express_1.default.json({ limit: '150mb' }));
-        //cors
-        this.app.use((0, cors_1.default)());
-    }
-    routes() {
-        // this.app.use("/users",userRoute);
-        // this.app.use( "/categories",categoryRoute);
-        // this.app.use("/products",productRouote)
-        // this.app.use("/restart",restartRoute);
-    }
-    start(callback) {
-        this.app.listen(this.port, callback);
-    }
+const order_routes_1 = __importDefault(require("./routes/order.routes"));
+function makeApp() {
+    const app = (0, express_1.default)();
+    app.use(express_1.default.json());
+    // Health check
+    app.get('/health', (req, res) => {
+        res.json({ status: 'ok' });
+    });
+    // Routes
+    app.use('/orders', order_routes_1.default);
+    app.use((req, res) => {
+        res.status(404).json({ error: 'Route not found' });
+    });
+    return app;
 }
-exports.default = Server;
 //# sourceMappingURL=app.js.map
