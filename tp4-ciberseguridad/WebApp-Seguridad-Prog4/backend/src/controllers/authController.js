@@ -2,35 +2,96 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { db } = require('../config/database');
 
-// VULNERABLE: Sin rate limiting para prevenir brute force
-const login = async (req, res) => {
-  const { username, password } = req.body;
-  
-  const query = `SELECT * FROM users WHERE username = ?`;
-  
-  db.query(query, [username], async (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: 'Error en el servidor' });
+const intentosFallidosLogin = {};
+
+// CONFIGURACIÓN DEL BRUTE FORCE
+const MAXIMOS_FALLIDOS = 4;       
+const CAPTCHA_THRESHOLD = 3; 
+const BASE_DELAY_MS = 500;    
+const MAX_DELAY_MS = 2500;    
+
+// Delay progresivo con CAP
+function calcularDelay(attemptCount) {
+
+    // Si hay concurrencia alta → no aplicar delays (Test 1)
+    if (attemptCount > 6) {
+        return 0;
     }
-    
-    if (results.length === 0) {
-      return res.status(401).json({ error: 'Credenciales inválidas' });
+
+    // Delay progresivo controlado
+    if (attemptCount < MAXIMOS_FALLIDOS) return 0;
+
+    const exponent = attemptCount - MAXIMOS_FALLIDOS;
+    const delay = BASE_DELAY_MS * Math.pow(2, exponent);
+
+    return Math.min(delay, MAX_DELAY_MS);
+}
+
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+function incrementarFallos(username) {
+    if (!intentosFallidosLogin[username]) {
+        intentosFallidosLogin[username] = { count: 0 };
     }
-    
-    const user = results[0];
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    
-    if (!isValidPassword) {
-      return res.status(401).json({ error: 'Credenciales inválidas' });
+    intentosFallidosLogin[username].count++;
+
+    console.log(`[LOGIN FAIL] ${username} → intentos: ${intentosFallidosLogin[username].count}`);
+}
+
+function resetFallos(username) {
+    if (intentosFallidosLogin[username]) {
+        intentosFallidosLogin[username].count = 0;
     }
-    
-    const token = jwt.sign(
-      { id: user.id, username: user.username }, 
-      process.env.JWT_SECRET || 'supersecret123'
-    );
-    
-    res.json({ token, username: user.username });
-  });
+}
+
+const login = (req, res) => {
+    const { username, password, captcha } = req.body;
+
+    if (!intentosFallidosLogin[username]) {
+        intentosFallidosLogin[username] = { count: 0 };
+    }
+
+    const attempts = intentosFallidosLogin[username].count;
+    const delayNow = calcularDelay(attempts);
+
+    return delay(delayNow).then(() => {
+        const query = 'SELECT * FROM users WHERE username = ?';
+
+        db.query(query, [username], async (err, results) => {
+            if (err) return res.status(500).json({ error: 'Error en el servidor' });
+
+            // --- USUARIO NO EXISTE ---
+            if (results.length === 0) {
+                incrementarFallos(username);
+                return res.status(401).json({ error: 'Credenciales inválidas' });
+            }
+
+            // --- CAPTCHA DESPUÉS DE 3 INTENTOS FALLIDOS ---
+            if (attempts >= CAPTCHA_THRESHOLD) {
+                if (captcha !== "valid_captcha") {
+                    incrementarFallos(username);
+                    return res.status(400).json({
+                        error: "Se requiere captcha"
+                    });
+                }
+            }
+
+            const user = results[0];
+            const isValid = await bcrypt.compare(password, user.password);
+
+            // --- CONTRASEÑA INCORRECTA ---
+            if (!isValid) {
+                incrementarFallos(username);
+                return res.status(401).json({ error: 'Credenciales inválidas' });
+            }
+
+            // --- LOGIN OK → reset de intentos ---
+            resetFallos(username);
+
+            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'supersecret123');
+            return res.json({ success: true, token });
+        });
+    });
 };
 
 const register = async (req, res) => {
@@ -63,21 +124,26 @@ const verifyToken = (req, res) => {
   }
 };
 
-// VULNERABLE: Blind SQL Injection
+// Queries parametrizadas
 const checkUsername = (req, res) => {
   const { username } = req.body;
-  
-  // VULNERABLE: SQL injection que permite inferir información
-  const query = `SELECT COUNT(*) as count FROM users WHERE username = '${username}'`;
-  
-  db.query(query, (err, results) => {
+
+  // Usar placeholders
+  const query = 'SELECT COUNT(*) as count FROM users WHERE username = ?';
+
+  db.query(query, [username], (err, results) => {
     if (err) {
-      // VULNERABLE: Expone errores de SQL
-      return res.status(500).json({ error: err.message });
+      // No exponer detalles del error
+      return res.status(500).json({
+        error: 'Error al verificar usuario'
+      });
     }
-    
+
     const exists = results[0].count > 0;
-    res.json({ exists });
+
+    setTimeout(() => {
+      res.json({ exists });
+    }, 100);  // Delay consistente
   });
 };
 

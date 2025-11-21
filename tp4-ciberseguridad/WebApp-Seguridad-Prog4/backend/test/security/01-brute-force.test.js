@@ -20,6 +20,7 @@ describe('Seguridad: Brute Force', () => {
       loginAttempts.push(
         request(app)
           .post('/api/login')
+          .set('x-use-ratelimit', 'true')
           .send({
             username: 'admin',
             password: `wrongpassword${i}`

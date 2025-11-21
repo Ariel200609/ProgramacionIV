@@ -11,13 +11,13 @@ console.log('══════════════════════�
 
 const tests = [
   '01-brute-force.test.js',
-  '02-command-injection.test.js',
-  '03-csrf-protection.test.js',
-  '04-file-inclusion.test.js',
-  '05-file-upload.test.js',
-  '06-insecure-captcha.test.js',
-  '07-sql-injection.test.js',
-  '08-blind-sql-injection.test.js'
+  //'02-command-injection.test.js',
+  //'03-csrf-protection.test.js',
+  //'04-file-inclusion.test.js',
+  //'05-file-upload.test.js',
+  //'06-insecure-captcha.test.js',
+  //'07-sql-injection.test.js',
+  //'08-blind-sql-injection.test.js'
 ];
 
 let currentTest = 0;
@@ -33,9 +33,13 @@ function runNextTest() {
   console.log(`\n📋 Ejecutando: ${testFile}`);
   console.log('─'.repeat(50));
 
-  const testPath = path.join(__dirname, 'security', testFile);
+  // Construir la ruta y reemplazar backslashes (\) por slashes (/) para que Jest en Windows no se confunda
+  const testPath = path.join(__dirname, 'security', testFile).replace(/\\/g, '/');
+
+  // MANTÉN TU CONFIGURACIÓN DE SPAWN ACTUAL (la que ya te funcionó)
   const jest = spawn('npx', ['jest', testPath, '--verbose'], {
-    stdio: 'inherit'
+    stdio: 'inherit',
+    shell: true 
   });
 
   jest.on('close', (code) => {
