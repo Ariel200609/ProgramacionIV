@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
+const csrf = require('csurf');
 const path = require('path');
 const { connectWithRetry } = require('./config/database');
 const { initializeFiles } = require('./utils/fileInit');
@@ -27,8 +28,29 @@ app.use(session({
   }
 }));
 
-// 2. ELIMINADO: Rate Limiter Global
-// app.use(limiter); <-- Esto bloqueaba tus tests de fuerza bruta
+// 2. Configurar CSRF Protection
+const csrfProtection = csrf({ cookie: false }); // Usar sesión en lugar de cookies
+
+// 3. Middleware para validar Origin/Referer
+app.use((req, res, next) => {
+  const allowedOrigins = ['http://localhost:3000', 'http://localhost:5000'];
+  const origin = req.get('origin');
+  const referer = req.get('referer');
+  
+  // Para POST/PUT/DELETE, validar Origin o Referer
+  if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) {
+    if (origin && !allowedOrigins.includes(origin)) {
+      return res.status(403).json({ error: 'Invalid origin' });
+    }
+    if (referer) {
+      const refererUrl = new URL(referer);
+      if (!allowedOrigins.includes(`${refererUrl.protocol}//${refererUrl.host}`)) {
+        return res.status(403).json({ error: 'Invalid referer' });
+      }
+    }
+  }
+  next();
+});
 
 app.use('/api', routes);
 app.use(notFound);
