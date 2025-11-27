@@ -16,9 +16,23 @@ const mockDb = {
     } else if (query.includes('SELECT COUNT(*)')) {
       callback(null, [{ count: 1 }]);
     } else if (query.includes('SELECT * FROM products')) {
-      callback(null, [
+      const testProducts = [
         { id: 1, name: 'Test Product', category: 'Test', price: 10, stock: 100 }
-      ]);
+      ];
+      
+      // Filtrar por parametros si existen
+      if (params && params.length > 0) {
+        const filtered = testProducts.filter(product => {
+          // Primer parametro es category si existe
+          if (params[0] && query.includes('category = ?')) {
+            return product.category === params[0];
+          }
+          return true;
+        });
+        callback(null, filtered);
+      } else {
+        callback(null, testProducts);
+      }
     } else {
       callback(null, []);
     }
